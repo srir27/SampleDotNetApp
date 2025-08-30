@@ -1,0 +1,41 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+  - script: dotnet restore --no-cache
+    displayName: 'Restore package'
+
+  - script: dotnet build --configuration $(buildConfiguration) --no-restore
+    displayName: 'Build package'
+
+  - script: dotnet test --no-build --configuration $(buildConfiguration)
+    displayName: 'Unit Test'
+  - task: DotNetCoreCLI@2
+    inputs:
+      azureSubscription: 'randomtfazspn'
+      command: 'test'
+      projects: '**/webtest.csproj'
+      configuration: $(buildConfiguration)
+      
+  # - task: WhiteSource@21
+  #   inputs:
+  #     cwd: '$(System.DefaultWorkingDirectory)'
+  #     projectName: 'webapp'
+  #   displayName: 'Mend task'
+  
+  - script: dotnet publish --configuration $(buildConfiguration) --no-build
+    displayName: 'Publish package'
+
