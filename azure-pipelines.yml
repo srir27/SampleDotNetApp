@@ -26,8 +26,9 @@ stages:
             displayName: 'Build package'
         
           - script: dotnet test --no-build --configuration $(buildConfiguration)
-            displayName: 'Unit Test'
+            displayName: 'DotNet test'
           - task: DotNetCoreCLI@2
+            displayName: 'Unit Test'
             inputs:
               azureSubscription: 'randomtfazspn'
               command: 'test'
@@ -40,9 +41,11 @@ stages:
           #     projectName: 'webapp'
           #   displayName: 'Mend task'
           
-          - script: dotnet publish --configuration $(buildConfiguration) --no-build -output $(Build.ArtifactStagingDirectory)
+          - script: dotnet publish --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
+            displayName: 'DotNet publish'
+
           - task: PublishBuildArtifacts@1
-            displayName: 'Publish package'
+            displayName: 'Publish build package'
             inputs:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
