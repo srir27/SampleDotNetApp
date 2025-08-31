@@ -40,6 +40,14 @@ stages:
           #     projectName: 'webapp'
           #   displayName: 'Mend task'
           
-          - script: dotnet publish --configuration $(buildConfiguration) --no-build
+          - script: dotnet publish --configuration $(buildConfiguration) --no-build -output $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
             displayName: 'Publish package'
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+              
+
+          
 
