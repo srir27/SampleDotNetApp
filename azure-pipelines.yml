@@ -16,6 +16,7 @@ variables:
 
 stages:
   - stage:
+    displayName: BuildAndPublish
     jobs:
       - job:
         displayName: 'Build Job'
@@ -51,6 +52,19 @@ stages:
               PathtoPublish: '$(Build.ArtifactStagingDirectory)'
               ArtifactName: 'drop'
               publishLocation: 'Container'
+
+  - stage: 
+    displayName: ApproveAndDeploy
+    jobs:
+      - deployment: DeployWeb
+        displayName: deploy Web App
+    # creates an environment if it doesn't exist
+        environment: 'SampleDotNet'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - script: echo my first deployment
               
 
           
