@@ -68,14 +68,14 @@ stages:
                 inputs:
                   buildType: 'current'
                   downloadType: 'single'
-                  artifactName: 'drop'
+                  artifactName: 'buildartifact'
                   downloadPath: '$(System.ArtifactsDirectory)'
               - task: AzureWebApp@1
                 inputs:
                   azureSubscription: 'randomtfazspn'
                   appType: 'webAppLinux'
                   appName: 'mypipletest'
-                  package: '$(System.ArtifactsDirectory)/**/*.zip'
+                  package: '$(System.ArtifactsDirectory)/buildartifact/**/*.zip'
                   runtimeStack: 'DOTNETCORE|8.0'
               
 
