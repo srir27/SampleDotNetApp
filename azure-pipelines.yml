@@ -46,13 +46,25 @@ stages:
           - script: dotnet publish --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
             displayName: 'DotNet publish'
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish build package'
+          # archieve task to used to make the build artifact in a zipped folder since az webapps require .zip 
+          # buildartifact.zip is the name of the artifact
+          - task: ArchiveFiles@2
+            displayName: 'Archiving the build artifact'
             inputs:
-              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              ArtifactName: 'buildartifact'
-              publishLocation: 'Container'
+              rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/buildartifact.zip'
+              replaceExistingArchive: true
 
+          - task: PublishPipelineArtifact@1
+            displayName: 'Publishing the build artifact'
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/buildartifact.zip'
+              artifact: 'buildartifact'
+              publishLocation: 'pipeline'
+              
+          
   - stage: 
     displayName: ApproveAndDeploy
     jobs:
@@ -63,20 +75,22 @@ stages:
           runOnce:
             deploy:
               steps:
-              - task: DownloadBuildArtifacts@1
-                displayName: 'Download build artifact'
+              - task: DownloadPipelineArtifact@2
+                displayName: 'Downloading the build artifact'
                 inputs:
                   buildType: 'current'
-                  downloadType: 'single'
                   artifactName: 'buildartifact'
-                  downloadPath: '$(System.ArtifactsDirectory)'
+                  targetPath: '$(Pipeline.Workspace)'
+              
               - task: AzureWebApp@1
                 inputs:
                   azureSubscription: 'randomtfazspn'
                   appType: 'webAppLinux'
                   appName: 'mypipletest'
-                  package: '$(System.ArtifactsDirectory)/buildartifact/**/*.zip'
+                  package: '$(Pipeline.Workspace)/**/*.zip'
                   runtimeStack: 'DOTNETCORE|8.0'
+
+              
               
 
               
