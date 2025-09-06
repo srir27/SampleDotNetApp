@@ -75,7 +75,7 @@ stages:
                   azureSubscription: 'randomtfazspn'
                   appType: 'webAppLinux'
                   appName: 'mypipletest'
-                  package: '$(System.ArtifactsDirectory)/buildartifact/**/*.zip'
+                  package: '$(System.ArtifactsDirectory)/**/*.zip'
                   runtimeStack: 'DOTNETCORE|8.0'
               
 
