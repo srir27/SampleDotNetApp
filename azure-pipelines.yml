@@ -87,7 +87,7 @@ stages:
                   azureSubscription: 'randomtfazspn'
                   appType: 'webAppLinux'
                   appName: 'mypipletest'
-                  package: '$(Pipeline.Workspace)/**/*.zip'
+                  package: '$(Pipeline.Workspace)/*.zip'
                   runtimeStack: 'DOTNETCORE|8.0'
 
               
