@@ -58,7 +58,6 @@ stages:
     jobs:
       - deployment: DeployWeb
         displayName: deploy Web App
-    # creates an environment if it doesn't exist
         environment: 'SampleDotNet'
         strategy:
           runOnce:
